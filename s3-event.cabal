@@ -32,6 +32,8 @@ test-suite test
   hs-source-dirs:      test
   build-depends:       base
                      , s3-event
+                     , aeson
+                     , classy-prelude
                      , tasty-discover
   main-is:             tasty.hs
   other-modules:       Network.AWS.S3.NotificationEventTest
