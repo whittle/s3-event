@@ -1,29 +1,41 @@
-name:                s3-event
-version:             0.1.0.0
-synopsis:            tasty-discover based template from stack
-description:         Please see README.md
-homepage:            https://github.com/whittle/s3-event#readme
-license:             BSD3
-license-file:        LICENSE
-author:              Jason Whittle
-maintainer:          jason.whittle@gmail.com
-copyright:           Copyright (c) 2016 Jason A. Whittle
-category:            Network, AWS, Cloud, Distributed Computing
-build-type:          Simple
-extra-source-files:  README.md
-cabal-version:       >=1.10
+name:                  s3-event
+version:               0.1.0.0
+synopsis:              Deserializer for S3 notification events
+homepage:              https://github.com/whittle/s3-event#readme
+license:               BSD3
+license-file:          LICENSE
+author:                Jason Whittle
+maintainer:            jason.whittle@gmail.com
+copyright:             Copyright (c) 2017 Jason A. Whittle
+category:              Network, AWS, Cloud, Distributed Computing
+build-type:            Simple
+cabal-version:         >=1.10
+description:
+  .
+  http://docs.aws.amazon.com/AmazonS3/latest/dev/notification-content-structure.html
 
-executable s3-event
-  hs-source-dirs:      src
-  main-is:             Main.hs
+extra-source-files:    LICENSE
+                     , README.md
+                     , stack.yaml
+
+library
   default-language:    Haskell2010
+  ghc-options:         -Wall
   build-depends:       base >= 4.7 && < 5
+                     , aeson >= 0.11
+  hs-source-dirs:      src
+  exposed-modules:     Network.AWS.S3.NotificationEvent
 
-test-suite s3-event-test
+test-suite test
   type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Tasty.hs
-  other-modules:       FooTest
-  build-depends:       base
-                     , tasty-discover
   default-language:    Haskell2010
+  hs-source-dirs:      test
+  build-depends:       base
+                     , s3-event
+                     , tasty-discover
+  main-is:             tasty.hs
+  other-modules:       Network.AWS.S3.NotificationEventTest
+
+source-repository head
+  type:                git
+  location:            https://github.com/whittle/s3-event

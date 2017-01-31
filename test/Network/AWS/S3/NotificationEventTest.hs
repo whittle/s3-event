@@ -1,4 +1,4 @@
-module FooTest where
+module Network.AWS.S3.NotificationEventTest where
 
 import Test.Tasty.Discover
 
