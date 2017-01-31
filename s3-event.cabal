@@ -1,0 +1,29 @@
+name:                s3-event
+version:             0.1.0.0
+synopsis:            tasty-discover based template from stack
+description:         Please see README.md
+homepage:            https://github.com/whittle/s3-event#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Jason Whittle
+maintainer:          jason.whittle@gmail.com
+copyright:           Copyright (c) 2016 Jason A. Whittle
+category:            Network, AWS, Cloud, Distributed Computing
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+executable s3-event
+  hs-source-dirs:      src
+  main-is:             Main.hs
+  default-language:    Haskell2010
+  build-depends:       base >= 4.7 && < 5
+
+test-suite s3-event-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Tasty.hs
+  other-modules:       FooTest
+  build-depends:       base
+                     , tasty-discover
+  default-language:    Haskell2010
