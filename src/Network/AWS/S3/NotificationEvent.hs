@@ -118,10 +118,10 @@ data S3Object = S3Object
   { s3ObjectKey :: A.ObjectKey
   , s3ObjectSize :: Int
   , s3ObjectETag :: A.ETag
-  , s3ObjectVersionId :: A.ObjectVersionId
-  -- ^ object version if bucket is versioning-enabled, otherwise null
-  , s3ObjectSequencer :: Text
-  -- ^ a string representation of a hexadecimal value used to
+  , s3ObjectVersionId :: Maybe A.ObjectVersionId
+  -- ^ Object version if bucket is versioning-enabled, otherwise null
+  , s3ObjectSequencer :: Maybe Text
+  -- ^ A string representation of a hexadecimal value used to
   -- determine event sequence, only used with PUTs and DELETEs
   } deriving (Eq, Show)
 
@@ -130,5 +130,5 @@ instance FromJSON S3Object where
     S3Object <$> (A.ObjectKey <$> o .: "key")
              <*> o .: "size"
              <*> (o .: "eTag" >>= unhex . encodeUtf8 >>= return . A.ETag)
-             <*> (A.ObjectVersionId <$> o .: "versionId")
-             <*> o .: "sequencer"
+             <*> ((map . map) A.ObjectVersionId (o .:? "versionId"))
+             <*> o .:? "sequencer"
