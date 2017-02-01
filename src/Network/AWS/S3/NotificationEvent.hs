@@ -28,11 +28,17 @@ instance FromJSON Event where
 
 data Record = Record
   { eventVersion :: Text
+  -- ^ Always "2.0"
   , eventSource :: Text
+  -- ^ Always "aws:s3"
   , awsRegion :: A.Region
+  -- ^ Always "us-east-1"
   , eventTime :: UTCTime
+  -- ^ The time when S3 finished processing the request
   , eventName :: Text -- A.Event?
+  -- ^ Type of event that took place
   , userIdentity :: UserIdentity
+  -- ^ User who caused the event
   , requestParameters :: RequestParameters
   , responseElements :: ResponseElements
   , s3Record :: S3Record
@@ -52,6 +58,7 @@ instance FromJSON Record where
 
 data UserIdentity = UserIdentity
   { principalId :: Text
+  -- ^ Amazon customer ID
   } deriving (Eq, Show)
 
 instance FromJSON UserIdentity where
@@ -60,6 +67,7 @@ instance FromJSON UserIdentity where
 
 data RequestParameters = RequestParameters
   { sourceIPAddress :: Text
+  -- ^ IP address where request came from
   } deriving (Eq, Show)
 
 instance FromJSON RequestParameters where
@@ -68,7 +76,9 @@ instance FromJSON RequestParameters where
 
 data ResponseElements = ResponseElements
   { xAmzRequestId :: Text
+  -- ^ Amazon S3 generated request ID
   , xAmzId2 :: Text
+  -- ^ Amazon S3 host that processed the request
   } deriving (Eq, Show)
 
 instance FromJSON ResponseElements where
@@ -78,7 +88,9 @@ instance FromJSON ResponseElements where
 
 data S3Record = S3Record
   { s3SchemaVersion :: Text
+  -- ^ Always "1.0"
   , s3ConfigurationId :: Text
+  -- ^ ID found in the bucket notification configuration
   , s3Bucket :: Bucket
   , s3Object :: S3Object
   } deriving (Eq, Show)
@@ -107,7 +119,10 @@ data S3Object = S3Object
   , s3ObjectSize :: Int
   , s3ObjectETag :: A.ETag
   , s3ObjectVersionId :: A.ObjectVersionId
+  -- ^ object version if bucket is versioning-enabled, otherwise null
   , s3ObjectSequencer :: Text
+  -- ^ a string representation of a hexadecimal value used to
+  -- determine event sequence, only used with PUTs and DELETEs
   } deriving (Eq, Show)
 
 instance FromJSON S3Object where
