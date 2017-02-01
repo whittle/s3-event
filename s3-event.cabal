@@ -24,6 +24,7 @@ library
   other-extensions:    OverloadedStrings
   build-depends:       base >= 4.7 && < 5
                      , aeson >= 0.11
+                     , amazonka-s3 >= 1.4.4
                      , classy-prelude >= 0.12
   hs-source-dirs:      src
   exposed-modules:     Network.AWS.S3.NotificationEvent
@@ -37,6 +38,7 @@ test-suite test
   build-depends:       base
                      , s3-event
                      , aeson
+                     , amazonka-s3
                      , classy-prelude
                      , tasty-discover
   main-is:             tasty.hs

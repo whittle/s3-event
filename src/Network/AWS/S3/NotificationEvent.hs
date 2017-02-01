@@ -13,6 +13,7 @@ module Network.AWS.S3.NotificationEvent
 
 import ClassyPrelude
 import Data.Aeson
+import Network.AWS.S3.Types (Region)
 
 
 data Event = Event
@@ -26,7 +27,7 @@ instance FromJSON Event where
 data Record = Record
   { eventVersion :: Text
   , eventSource :: Text
-  , awsRegion :: Text
+  , awsRegion :: Region
   , eventTime :: Text
   , eventName :: Text
   , userIdentity :: UserIdentity
