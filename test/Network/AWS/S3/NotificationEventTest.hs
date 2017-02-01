@@ -6,7 +6,7 @@ module Network.AWS.S3.NotificationEventTest where
 import ClassyPrelude
 import Data.Aeson (decode')
 import Network.AWS.S3.NotificationEvent
-import Network.AWS.S3.Types (Region(..))
+import qualified Network.AWS.S3.Types as A
 import Test.Tasty.Discover
 
 
@@ -17,7 +17,7 @@ case_deserialize_happy_face_example = do
   let expected = Record
         { eventVersion = "2.0"
         , eventSource = "aws:s3"
-        , awsRegion = NorthVirginia
+        , awsRegion = A.NorthVirginia
         , eventTime = "1970-01-01T00:00:00.000Z"
         , eventName = "ObjectCreated:Put"
         , userIdentity = UserIdentity
@@ -34,17 +34,17 @@ case_deserialize_happy_face_example = do
           { s3SchemaVersion = "1.0"
           , configurationId = "testConfigRule"
           , bucket = Bucket
-            { name = "mybucket"
+            { name = A.BucketName "mybucket"
             , ownerIdentity = UserIdentity
               { principalId = "A3NL1KOZZKExample"
               }
             , arn = "arn:aws:s3:::mybucket"
             }
           , object = S3Object
-            { key = "HappyFace.jpg"
+            { key = A.ObjectKey "HappyFace.jpg"
             , size = 1024
-            , eTag = "d41d8cd98f00b204e9800998ecf8427e"
-            , versionId = "096fKKXTRTtl3on89fVO.nfljtsv6qko"
+            , eTag = A.ETag "\212\GS\140\217\143\NUL\178\EOT\233\128\t\152\236\248B~"
+            , versionId = A.ObjectVersionId "096fKKXTRTtl3on89fVO.nfljtsv6qko"
             , sequencer = "0055AED6DCD90281E5"
             }
           }
@@ -72,17 +72,17 @@ case_deserialize_response_elements =
 case_deserialize_S3_record :: Expectation
 case_deserialize_S3_record =
   let json = "{\"s3SchemaVersion\":\"1.0\",\"configurationId\":\"testConfigRule\",\"bucket\":{\"name\":\"mybucket\",\"ownerIdentity\":{\"principalId\":\"A3NL1KOZZKExample\"},\"arn\":\"arn:aws:s3:::mybucket\"},\"object\":{\"key\":\"HappyFace.jpg\",\"size\":1024,\"eTag\":\"d41d8cd98f00b204e9800998ecf8427e\",\"versionId\":\"096fKKXTRTtl3on89fVO.nfljtsv6qko\",\"sequencer\":\"0055AED6DCD90281E5\"}}"
-      expected = S3Record "1.0" "testConfigRule" (Bucket "mybucket" (UserIdentity "A3NL1KOZZKExample") "arn:aws:s3:::mybucket") (S3Object "HappyFace.jpg" 1024 "d41d8cd98f00b204e9800998ecf8427e" "096fKKXTRTtl3on89fVO.nfljtsv6qko" "0055AED6DCD90281E5")
+      expected = S3Record "1.0" "testConfigRule" (Bucket "mybucket" (UserIdentity "A3NL1KOZZKExample") "arn:aws:s3:::mybucket") (S3Object (A.ObjectKey "HappyFace.jpg") 1024 (A.ETag "\212\GS\140\217\143\NUL\178\EOT\233\128\t\152\236\248B~") (A.ObjectVersionId "096fKKXTRTtl3on89fVO.nfljtsv6qko") "0055AED6DCD90281E5")
   in decode' json `shouldBe` Just expected
 
 case_deserialize_bucket :: Expectation
 case_deserialize_bucket =
   let json = "{\"name\":\"mybucket\",\"ownerIdentity\":{\"principalId\":\"A3NL1KOZZKExample\"},\"arn\":\"arn:aws:s3:::mybucket\"}"
-      expected = Bucket "mybucket" (UserIdentity "A3NL1KOZZKExample") "arn:aws:s3:::mybucket"
+      expected = Bucket (A.BucketName "mybucket") (UserIdentity "A3NL1KOZZKExample") "arn:aws:s3:::mybucket"
   in decode' json `shouldBe` Just expected
 
 case_deserialize_S3_object :: Expectation
 case_deserialize_S3_object =
   let json = "{\"key\":\"HappyFace.jpg\",\"size\":1024,\"eTag\":\"d41d8cd98f00b204e9800998ecf8427e\",\"versionId\":\"096fKKXTRTtl3on89fVO.nfljtsv6qko\",\"sequencer\":\"0055AED6DCD90281E5\"}"
-      expected = S3Object "HappyFace.jpg" 1024 "d41d8cd98f00b204e9800998ecf8427e" "096fKKXTRTtl3on89fVO.nfljtsv6qko" "0055AED6DCD90281E5"
+      expected = S3Object (A.ObjectKey "HappyFace.jpg") 1024 (A.ETag "\212\GS\140\217\143\NUL\178\EOT\233\128\t\152\236\248B~") (A.ObjectVersionId "096fKKXTRTtl3on89fVO.nfljtsv6qko") "0055AED6DCD90281E5"
   in decode' json `shouldBe` Just expected

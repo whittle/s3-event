@@ -1,3 +1,4 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Network.AWS.S3.NotificationEvent
@@ -13,7 +14,8 @@ module Network.AWS.S3.NotificationEvent
 
 import ClassyPrelude
 import Data.Aeson
-import Network.AWS.S3.Types (Region)
+import Data.Hex (unhex)
+import qualified Network.AWS.S3.Types as A
 
 
 data Event = Event
@@ -27,9 +29,9 @@ instance FromJSON Event where
 data Record = Record
   { eventVersion :: Text
   , eventSource :: Text
-  , awsRegion :: Region
+  , awsRegion :: A.Region
   , eventTime :: Text
-  , eventName :: Text
+  , eventName :: Text -- A.Event?
   , userIdentity :: UserIdentity
   , requestParameters :: RequestParameters
   , responseElements :: ResponseElements
@@ -89,29 +91,29 @@ instance FromJSON S3Record where
              <*> o .: "object"
 
 data Bucket = Bucket
-  { name :: Text
+  { name :: A.BucketName
   , ownerIdentity :: UserIdentity
   , arn :: Text
   } deriving (Eq, Show)
 
 instance FromJSON Bucket where
   parseJSON = withObject "Bucket" $ \o ->
-    Bucket <$> o .: "name"
+    Bucket <$> (A.BucketName <$> o .: "name")
            <*> o .: "ownerIdentity"
            <*> o .: "arn"
 
 data S3Object = S3Object
-  { key :: Text
+  { key :: A.ObjectKey
   , size :: Int
-  , eTag :: Text
-  , versionId :: Text
+  , eTag :: A.ETag
+  , versionId :: A.ObjectVersionId
   , sequencer :: Text
   } deriving (Eq, Show)
 
 instance FromJSON S3Object where
   parseJSON = withObject "S3 Object" $ \o ->
-    S3Object <$> o .: "key"
+    S3Object <$> (A.ObjectKey <$> o .: "key")
              <*> o .: "size"
-             <*> o .: "eTag"
-             <*> o .: "versionId"
+             <*> (o .: "eTag" >>= unhex . encodeUtf8 >>= return . A.ETag)
+             <*> (A.ObjectVersionId <$> o .: "versionId")
              <*> o .: "sequencer"
