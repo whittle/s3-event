@@ -42,6 +42,7 @@ test-suite test
                      , amazonka-s3
                      , classy-prelude
                      , tasty-discover
+                     , time
   main-is:             tasty.hs
   other-modules:       Network.AWS.S3.NotificationEventTest
 

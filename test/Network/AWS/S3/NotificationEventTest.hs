@@ -5,6 +5,7 @@ module Network.AWS.S3.NotificationEventTest where
 
 import ClassyPrelude
 import Data.Aeson (decode')
+import Data.Time.Clock (secondsToDiffTime)
 import Network.AWS.S3.NotificationEvent
 import qualified Network.AWS.S3.Types as A
 import Test.Tasty.Discover
@@ -18,7 +19,7 @@ case_deserialize_happy_face_example = do
         { eventVersion = "2.0"
         , eventSource = "aws:s3"
         , awsRegion = A.NorthVirginia
-        , eventTime = "1970-01-01T00:00:00.000Z"
+        , eventTime = UTCTime (ModifiedJulianDay 40587) (secondsToDiffTime 0)
         , eventName = "ObjectCreated:Put"
         , userIdentity = UserIdentity
           { principalId = "AIDAJDPLRKLG7UEXAMPLE"

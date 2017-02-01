@@ -30,7 +30,7 @@ data Record = Record
   { eventVersion :: Text
   , eventSource :: Text
   , awsRegion :: A.Region
-  , eventTime :: Text
+  , eventTime :: UTCTime
   , eventName :: Text -- A.Event?
   , userIdentity :: UserIdentity
   , requestParameters :: RequestParameters
