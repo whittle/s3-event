@@ -78,9 +78,9 @@ instance FromJSON ResponseElements where
 
 data S3Record = S3Record
   { s3SchemaVersion :: Text
-  , configurationId :: Text
-  , bucket :: Bucket
-  , object :: S3Object
+  , s3ConfigurationId :: Text
+  , s3Bucket :: Bucket
+  , s3Object :: S3Object
   } deriving (Eq, Show)
 
 instance FromJSON S3Record where
@@ -91,23 +91,23 @@ instance FromJSON S3Record where
              <*> o .: "object"
 
 data Bucket = Bucket
-  { name :: A.BucketName
-  , ownerIdentity :: UserIdentity
-  , arn :: Text
+  { bucketName :: A.BucketName
+  , bucketOwnerIdentity :: UserIdentity
+  , bucketARN :: A.BucketName
   } deriving (Eq, Show)
 
 instance FromJSON Bucket where
   parseJSON = withObject "Bucket" $ \o ->
     Bucket <$> (A.BucketName <$> o .: "name")
            <*> o .: "ownerIdentity"
-           <*> o .: "arn"
+           <*> (A.BucketName <$> o .: "arn")
 
 data S3Object = S3Object
-  { key :: A.ObjectKey
-  , size :: Int
-  , eTag :: A.ETag
-  , versionId :: A.ObjectVersionId
-  , sequencer :: Text
+  { s3ObjectKey :: A.ObjectKey
+  , s3ObjectSize :: Int
+  , s3ObjectETag :: A.ETag
+  , s3ObjectVersionId :: A.ObjectVersionId
+  , s3ObjectSequencer :: Text
   } deriving (Eq, Show)
 
 instance FromJSON S3Object where
