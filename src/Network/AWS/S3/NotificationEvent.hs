@@ -59,12 +59,14 @@ data Record = Record
   -- ^ Always "2.0"
   , _eventSource :: Text
   -- ^ Always "aws:s3"
-  , _eventAwsRegion :: A.Region
+  , _eventAwsRegion :: Text
   -- ^ Always "us-east-1"
+  -- TODO: once amazonka >= 1.5.4, use A.Region
   , _eventTime :: UTCTime
   -- ^ The time when S3 finished processing the request
-  , _eventName :: Text -- A.Event?
+  , _eventName :: Text
   -- ^ Type of event that took place
+  -- TODO: consider using A.Event
   , _eventInitiator :: UserIdentity
   -- ^ User who caused the event
   , _eventRequestParameters :: RequestParameters
