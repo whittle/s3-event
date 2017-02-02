@@ -16,37 +16,37 @@ case_deserialize_happy_face_example :: Expectation
 case_deserialize_happy_face_example = do
   raw <- readFile "examples/HappyFace.json"
   let expected = Record
-        { eventVersion = "2.0"
-        , eventSource = "aws:s3"
-        , awsRegion = A.NorthVirginia
-        , eventTime = UTCTime (ModifiedJulianDay 40587) (secondsToDiffTime 0)
-        , eventName = "ObjectCreated:Put"
-        , userIdentity = UserIdentity
-          { principalId = "AIDAJDPLRKLG7UEXAMPLE"
+        { _eventVersion = "2.0"
+        , _eventSource = "aws:s3"
+        , _eventAwsRegion = A.NorthVirginia
+        , _eventTime = UTCTime (ModifiedJulianDay 40587) (secondsToDiffTime 0)
+        , _eventName = "ObjectCreated:Put"
+        , _eventInitiator = UserIdentity
+          { _userIdentityPrincipalId = "AIDAJDPLRKLG7UEXAMPLE"
           }
-        , requestParameters = RequestParameters
-          { sourceIPAddress = "127.0.0.1"
+        , _eventRequestParameters = RequestParameters
+          { _sourceIPAddress = "127.0.0.1"
           }
-        , responseElements = ResponseElements
-          { xAmzRequestId = "C3D13FE58DE4C810"
-          , xAmzId2 = "FMyUVURIY8/IgAtTv8xRjskZQpcIZ9KG4V5Wp6S7S/JRWeUWerMUE5JgHvANOjpD"
+        , _eventResponseElements = ResponseElements
+          { _xAmzRequestId = "C3D13FE58DE4C810"
+          , _xAmzId2 = "FMyUVURIY8/IgAtTv8xRjskZQpcIZ9KG4V5Wp6S7S/JRWeUWerMUE5JgHvANOjpD"
           }
-        , s3Record = S3Record
-          { s3SchemaVersion = "1.0"
-          , s3ConfigurationId = "testConfigRule"
-          , s3Bucket = Bucket
-            { bucketName = A.BucketName "mybucket"
-            , bucketOwnerIdentity = UserIdentity
-              { principalId = "A3NL1KOZZKExample"
+        , _eventS3Record = S3Record
+          { _s3SchemaVersion = "1.0"
+          , _s3ConfigurationId = "testConfigRule"
+          , _s3Bucket = Bucket
+            { _bucketName = A.BucketName "mybucket"
+            , _bucketOwner = UserIdentity
+              { _userIdentityPrincipalId = "A3NL1KOZZKExample"
               }
-            , bucketARN = A.BucketName "arn:aws:s3:::mybucket"
+            , _bucketARN = A.BucketName "arn:aws:s3:::mybucket"
             }
-          , s3Object = S3Object
-            { s3ObjectKey = A.ObjectKey "HappyFace.jpg"
-            , s3ObjectSize = 1024
-            , s3ObjectETag = A.ETag "\212\GS\140\217\143\NUL\178\EOT\233\128\t\152\236\248B~"
-            , s3ObjectVersionId = Just $ A.ObjectVersionId "096fKKXTRTtl3on89fVO.nfljtsv6qko"
-            , s3ObjectSequencer = Just "0055AED6DCD90281E5"
+          , _s3Object = S3Object
+            { _s3ObjectKey = A.ObjectKey "HappyFace.jpg"
+            , _s3ObjectSize = 1024
+            , _s3ObjectETag = A.ETag "\212\GS\140\217\143\NUL\178\EOT\233\128\t\152\236\248B~"
+            , _s3ObjectVersionId = Just $ A.ObjectVersionId "096fKKXTRTtl3on89fVO.nfljtsv6qko"
+            , _s3ObjectSequencer = Just "0055AED6DCD90281E5"
             }
           }
         }

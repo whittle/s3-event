@@ -27,6 +27,7 @@ library
                      , amazonka-s3 >= 1.4.4
                      , classy-prelude >= 0.12
                      , hex >= 0.1
+                     , lens
   hs-source-dirs:      src
   exposed-modules:     Network.AWS.S3.NotificationEvent
 

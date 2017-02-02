@@ -1,25 +1,53 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Network.AWS.S3.NotificationEvent
   ( Event(..)
+  , records
   , Record(..)
+  , eventVersion
+  , eventSource
+  , eventAwsRegion
+  , eventTime
+  , eventName
+  , eventInitiator
+  , eventRequestParameters
+  , eventResponseElements
+  , eventS3Record
   , Bucket(..)
+  , bucketName
+  , bucketOwner
+  , bucketARN
   , RequestParameters(..)
+  , sourceIPAddress
   , ResponseElements(..)
+  , xAmzId2
+  , xAmzRequestId
   , S3Object(..)
+  , s3ObjectKey
+  , s3ObjectSize
+  , s3ObjectETag
+  , s3ObjectVersionId
+  , s3ObjectSequencer
   , S3Record(..)
+  , s3SchemaVersion
+  , s3ConfigurationId
+  , s3Bucket
+  , s3Object
   , UserIdentity(..)
+  , userIdentityPrincipalId
   ) where
 
 import ClassyPrelude
+import Control.Lens
 import Data.Aeson
 import Data.Hex (unhex)
 import qualified Network.AWS.S3.Types as A
 
 
 data Event = Event
-  { records :: [Record]
+  { _records :: [Record]
   } deriving (Eq, Show)
 
 instance FromJSON Event where
@@ -27,21 +55,21 @@ instance FromJSON Event where
     Event <$> o .: "Records"
 
 data Record = Record
-  { eventVersion :: Text
+  { _eventVersion :: Text
   -- ^ Always "2.0"
-  , eventSource :: Text
+  , _eventSource :: Text
   -- ^ Always "aws:s3"
-  , awsRegion :: A.Region
+  , _eventAwsRegion :: A.Region
   -- ^ Always "us-east-1"
-  , eventTime :: UTCTime
+  , _eventTime :: UTCTime
   -- ^ The time when S3 finished processing the request
-  , eventName :: Text -- A.Event?
+  , _eventName :: Text -- A.Event?
   -- ^ Type of event that took place
-  , userIdentity :: UserIdentity
+  , _eventInitiator :: UserIdentity
   -- ^ User who caused the event
-  , requestParameters :: RequestParameters
-  , responseElements :: ResponseElements
-  , s3Record :: S3Record
+  , _eventRequestParameters :: RequestParameters
+  , _eventResponseElements :: ResponseElements
+  , _eventS3Record :: S3Record
   } deriving (Eq, Show)
 
 instance FromJSON Record where
@@ -57,7 +85,7 @@ instance FromJSON Record where
            <*> o .: "s3"
 
 data UserIdentity = UserIdentity
-  { principalId :: Text
+  { _userIdentityPrincipalId :: Text
   -- ^ Amazon customer ID
   } deriving (Eq, Show)
 
@@ -66,7 +94,7 @@ instance FromJSON UserIdentity where
     UserIdentity <$> o .: "principalId"
 
 data RequestParameters = RequestParameters
-  { sourceIPAddress :: Text
+  { _sourceIPAddress :: Text
   -- ^ IP address where request came from
   } deriving (Eq, Show)
 
@@ -75,9 +103,9 @@ instance FromJSON RequestParameters where
     RequestParameters <$> o .: "sourceIPAddress"
 
 data ResponseElements = ResponseElements
-  { xAmzRequestId :: Text
+  { _xAmzRequestId :: Text
   -- ^ Amazon S3 generated request ID
-  , xAmzId2 :: Text
+  , _xAmzId2 :: Text
   -- ^ Amazon S3 host that processed the request
   } deriving (Eq, Show)
 
@@ -87,12 +115,12 @@ instance FromJSON ResponseElements where
                      <*> o .: "x-amz-id-2"
 
 data S3Record = S3Record
-  { s3SchemaVersion :: Text
+  { _s3SchemaVersion :: Text
   -- ^ Always "1.0"
-  , s3ConfigurationId :: Text
+  , _s3ConfigurationId :: Text
   -- ^ ID found in the bucket notification configuration
-  , s3Bucket :: Bucket
-  , s3Object :: S3Object
+  , _s3Bucket :: Bucket
+  , _s3Object :: S3Object
   } deriving (Eq, Show)
 
 instance FromJSON S3Record where
@@ -103,9 +131,9 @@ instance FromJSON S3Record where
              <*> o .: "object"
 
 data Bucket = Bucket
-  { bucketName :: A.BucketName
-  , bucketOwnerIdentity :: UserIdentity
-  , bucketARN :: A.BucketName
+  { _bucketName :: A.BucketName
+  , _bucketOwner :: UserIdentity
+  , _bucketARN :: A.BucketName
   } deriving (Eq, Show)
 
 instance FromJSON Bucket where
@@ -115,12 +143,12 @@ instance FromJSON Bucket where
            <*> (A.BucketName <$> o .: "arn")
 
 data S3Object = S3Object
-  { s3ObjectKey :: A.ObjectKey
-  , s3ObjectSize :: Int
-  , s3ObjectETag :: A.ETag
-  , s3ObjectVersionId :: Maybe A.ObjectVersionId
+  { _s3ObjectKey :: A.ObjectKey
+  , _s3ObjectSize :: Int
+  , _s3ObjectETag :: A.ETag
+  , _s3ObjectVersionId :: Maybe A.ObjectVersionId
   -- ^ Object version if bucket is versioning-enabled, otherwise null
-  , s3ObjectSequencer :: Maybe Text
+  , _s3ObjectSequencer :: Maybe Text
   -- ^ A string representation of a hexadecimal value used to
   -- determine event sequence, only used with PUTs and DELETEs
   } deriving (Eq, Show)
@@ -132,3 +160,12 @@ instance FromJSON S3Object where
              <*> (o .: "eTag" >>= unhex . encodeUtf8 >>= return . A.ETag)
              <*> ((map . map) A.ObjectVersionId (o .:? "versionId"))
              <*> o .:? "sequencer"
+
+$(makeLenses ''Event)
+$(makeLenses ''Record)
+$(makeLenses ''UserIdentity)
+$(makeLenses ''RequestParameters)
+$(makeLenses ''ResponseElements)
+$(makeLenses ''S3Record)
+$(makeLenses ''Bucket)
+$(makeLenses ''S3Object)
