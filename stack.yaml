@@ -1,7 +1,6 @@
-resolver: lts-6.29
+resolver: lts-9.3
 packages:
 - '.'
-extra-deps:
-- "tasty-discover-3.0.2"
+extra-deps: []
 flags: {}
 extra-package-dbs: []
